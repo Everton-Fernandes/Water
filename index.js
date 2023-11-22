@@ -48,77 +48,50 @@ function xyToIndex(x, y, width) {
 function WaterFunction(matrix, actives, width) {
   var newActives = [];
   for (var i = 0; i < actives.length; i++) {
-    var left = {
-      x: actives[i].x - 1,
-      y: actives[i].y,
-      force: actives[i].force - 1,
-    };
-    var right = {
-      x: actives[i].x + 1,
-      y: actives[i].y,
-      force: actives[i].force - 1,
-    };
-    var top = {
-      x: actives[i].x,
-      y: actives[i].y + 1,
-      force: actives[i].force - 1,
-    };
-    var bottom = {
-      x: actives[i].x,
-      y: actives[i].y - 1,
-      force: actives[i].force - 1,
-    };
+    if (actives[i].force > 0) {
+      var left = {
+        x: actives[i].x - 1,
+        y: actives[i].y,
+        force: actives[i].force - 1,
+      };
 
-    if (
-      left.x >= 0 &&
-      matrix[xyToIndex(left.x, left.y, width)] <
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)]
-    ) {
-      matrix[xyToIndex(left.x, left.y, width)] = Math.min(
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
-        7
-      );
-      if (actives[i].force > 0)
+      var right = {
+        x: actives[i].x + 1,
+        y: actives[i].y,
+        force: actives[i].force - 1,
+      };
+      
+      var top = {
+        x: actives[i].x,
+        y: actives[i].y + 1,
+        force: actives[i].force - 1,
+      };
+      
+      var bottom = {
+        x: actives[i].x,
+        y: actives[i].y - 1,
+        force: actives[i].force - 1,
+      };
+
+      if (matrix[xyToIndex(left.x, left.y, width)] == 0) {
+        matrix[xyToIndex(left.x, left.y, width)] = 1;
         newActives.push(left);
-    }
+      }
 
-    if (
-      right.x < width &&
-      matrix[xyToIndex(right.x, right.y, width)] <
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)]
-    ) {
-      matrix[xyToIndex(right.x, right.y, width)] = Math.min(
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
-        7
-      );
-      if (actives[i].force > 0)
+      if (matrix[xyToIndex(right.x, right.y, width)] == 0) {
+        matrix[xyToIndex(right.x, right.y, width)] = 1;
         newActives.push(right);
-    }
+      }
 
-    if (
-      top.y < width &&
-      matrix[xyToIndex(top.x, top.y, width)] <
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)]
-    ) {
-      matrix[xyToIndex(top.x, top.y, width)] = Math.min(
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
-        7
-      );
-      if (actives[i].force > 0)
+      if (matrix[xyToIndex(top.x, top.y, width)] == 0) {
+        matrix[xyToIndex(top.x, top.y, width)] = 1;
         newActives.push(top);
-    }
+      }
 
-    if (
-      bottom.y >= 0 &&
-      matrix[xyToIndex(bottom.x, bottom.y, width)] <
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)]
-    ) {
-      matrix[xyToIndex(bottom.x, bottom.y, width)] = Math.min(
-        matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
-        7
-      );
-      if (actives[i].force > 0)
-        newActives.push(bottom);
+      if (matrix[xyToIndex(bottom.x, bottom.y, width)] == 0) {
+          matrix[xyToIndex(bottom.x, bottom.y, width)] = 1;
+          newActives.push(bottom);
+      }
     }
   }
 
@@ -126,14 +99,14 @@ function WaterFunction(matrix, actives, width) {
 }
 
 var width = 15;
-var actives = [{ x: 8, y: 8, force: 7 }];
+var actives = [{ x: 7, y: 7, force: 7 }];
 var matrix = new Array(width * width);
 
 for (var i = 0; i < width * width; i++) {
   matrix[i] = 0;
 }
 
-matrix[xyToIndex(8, 8, width)] = 8; // Valor inicial de força de escoamento (máximo)
+matrix[xyToIndex(7, 7, width)] = 8; // Valor inicial de força de escoamento (máximo)
 
 function drawWater() {
   actives = WaterFunction(matrix, actives, width);

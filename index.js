@@ -3,11 +3,11 @@ import { OrbitControls } from "https://cdn.skypack.dev/three@0.133.1/examples/js
 
 let scene, camera, renderer, controls;
 let waterBlocks = [];
+let grassBlocks = [];
 let intervalId;
 const intervalTime = 1000;
-const gridSize = 15;
-let row = 0,
-  col = 0;
+let waterCube;
+let grassCube;
 
 init();
 startDrawing();
@@ -34,7 +34,26 @@ function init() {
   controls.screenSpacePanning = false;
   controls.maxPolarAngle = Math.PI / 2;
 
+  drawGrass()
+
   window.addEventListener("resize", onWindowResize);
+}
+
+function drawGrass() {
+  for (let x = 5; x < 7; x++) {
+    for (let y = 5; y < 7; y++) {
+      const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+      const cubeMaterial = new THREE.MeshBasicMaterial({
+        color: 0x008000,
+        wireframe: false,
+      });
+      grassCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      
+      grassCube.position.set(x, 0, y);
+      scene.add(grassCube);
+      grassBlocks.push(grassCube);
+    }
+  }
 }
 
 function startDrawing() {
@@ -60,13 +79,13 @@ function WaterFunction(matrix, actives, width) {
         y: actives[i].y,
         force: actives[i].force - 1,
       };
-      
+
       var top = {
         x: actives[i].x,
         y: actives[i].y + 1,
         force: actives[i].force - 1,
       };
-      
+
       var bottom = {
         x: actives[i].x,
         y: actives[i].y - 1,
@@ -89,8 +108,8 @@ function WaterFunction(matrix, actives, width) {
       }
 
       if (matrix[xyToIndex(bottom.x, bottom.y, width)] == 0) {
-          matrix[xyToIndex(bottom.x, bottom.y, width)] = 1;
-          newActives.push(bottom);
+        matrix[xyToIndex(bottom.x, bottom.y, width)] = 1;
+        newActives.push(bottom);
       }
     }
   }
@@ -126,11 +145,15 @@ function drawWater() {
           color: 0x3399ff,
           wireframe: true,
         });
-        const waterCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-
+        waterCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        
         waterCube.position.set(x, 0, y);
-        scene.add(waterCube);
-        waterBlocks.push(waterCube);
+        if(x == 5 && y == 5 || x == 5 && y == 6 || x == 6 && y == 5 || x == 6 && y == 6){
+          waterBlocks.pop(waterCube);
+        }else{
+          scene.add(waterCube);
+          waterBlocks.push(waterCube);
+        }
       }
     }
   }

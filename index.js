@@ -48,10 +48,26 @@ function xyToIndex(x, y, width) {
 function WaterFunction(matrix, actives, width) {
   var newActives = [];
   for (var i = 0; i < actives.length; i++) {
-    var left = { x: actives[i].x - 1, y: actives[i].y };
-    var right = { x: actives[i].x + 1, y: actives[i].y };
-    var top = { x: actives[i].x, y: actives[i].y + 1 };
-    var bottom = { x: actives[i].x, y: actives[i].y - 1 };
+    var left = {
+      x: actives[i].x - 1,
+      y: actives[i].y,
+      force: actives[i].force - 1,
+    };
+    var right = {
+      x: actives[i].x + 1,
+      y: actives[i].y,
+      force: actives[i].force - 1,
+    };
+    var top = {
+      x: actives[i].x,
+      y: actives[i].y + 1,
+      force: actives[i].force - 1,
+    };
+    var bottom = {
+      x: actives[i].x,
+      y: actives[i].y - 1,
+      force: actives[i].force - 1,
+    };
 
     if (
       left.x >= 0 &&
@@ -62,7 +78,8 @@ function WaterFunction(matrix, actives, width) {
         matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
         7
       );
-      newActives.push(left);
+      if (actives[i].force > 0)
+        newActives.push(left);
     }
 
     if (
@@ -74,7 +91,8 @@ function WaterFunction(matrix, actives, width) {
         matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
         7
       );
-      newActives.push(right);
+      if (actives[i].force > 0)
+        newActives.push(right);
     }
 
     if (
@@ -86,7 +104,8 @@ function WaterFunction(matrix, actives, width) {
         matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
         7
       );
-      newActives.push(top);
+      if (actives[i].force > 0)
+        newActives.push(top);
     }
 
     if (
@@ -98,7 +117,8 @@ function WaterFunction(matrix, actives, width) {
         matrix[xyToIndex(actives[i].x, actives[i].y, width)] - 1,
         7
       );
-      newActives.push(bottom);
+      if (actives[i].force > 0)
+        newActives.push(bottom);
     }
   }
 
@@ -106,7 +126,7 @@ function WaterFunction(matrix, actives, width) {
 }
 
 var width = 15;
-var actives = [{ x: 8, y: 8 }];
+var actives = [{ x: 8, y: 8, force: 7 }];
 var matrix = new Array(width * width);
 
 for (var i = 0; i < width * width; i++) {
